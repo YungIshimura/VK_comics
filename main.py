@@ -115,4 +115,4 @@ if __name__ == "__main__":
     media_id = save_photo_album(vk_api_key, photo, server, hash)
     publication_comics_on_the_wall(
         vk_api_key, group_id, user_id, media_id, comment)
-    os.remove(f'{filename}{extension}')
+    os.remove(f"{filename}{extension}")
