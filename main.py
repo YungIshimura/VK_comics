@@ -63,11 +63,11 @@ def deploy_photo(upload_adress):
             "photo": file
         }
         response = requests.post(upload_adress, files=files)
-        response.raise_for_status()
-        server_callback = response.json()
-        server_data.append(server_callback['server'])
-        server_data.append(server_callback['photo'])
-        server_data.append(server_callback['hash'])
+    response.raise_for_status()
+    server_callback = response.json()
+    server_data.append(server_callback['server'])
+    server_data.append(server_callback['photo'])
+    server_data.append(server_callback['hash'])
 
     return server_data
 
@@ -110,15 +110,17 @@ if __name__ == "__main__":
     group_id = os.getenv("GROUP_ID")
     vk_api_key = os.getenv("VK_API_KEY")
     user_id = os.getenv("USER_ID")
-    filename = "image"
-    number, image_url = get_number_of_comics()
-    extension = get_file_extension(image_url)
-    image_link, comment = get_image_link_and_comment(number)
-    download_image(image_link, extension, filename)
-    upload_adress = get_photo_upload_addresses(vk_api_key)
-    server_data = deploy_photo(upload_adress)
-    server, photo, hash = server_data
-    media_id = save_photo_album(vk_api_key, photo, server, hash)
-    publication_comics_on_the_wall(
-        vk_api_key, group_id, user_id, media_id, comment)
-    os.remove(f"{filename}{extension}")
+    try:
+        filename = "image"
+        number, image_url = get_number_of_comics()
+        extension = get_file_extension(image_url)
+        image_link, comment = get_image_link_and_comment(number)
+        download_image(image_link, extension, filename)
+        upload_adress = get_photo_upload_addresses(vk_api_key)
+        server_data = deploy_photo(upload_adress)
+        server, photo, hash = server_data
+        media_id = save_photo_album(vk_api_key, photo, server, hash)
+        publication_comics_on_the_wall(
+            vk_api_key, group_id, user_id, media_id, comment)
+    finally:
+        os.remove(f"{filename}{extension}")
