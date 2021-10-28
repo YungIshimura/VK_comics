@@ -52,8 +52,8 @@ def get_photo_upload_addresses(token):
         "https://api.vk.com/method/photos.getWallUploadServer", params=params)
     response.raise_for_status()
     upload_addresses = response.json()
-    for upload_adress in upload_addresses.values():
-        return upload_adress["upload_url"]
+
+    return upload_addresses['response']['upload_url']
 
 
 def deploy_photo(upload_adress):
@@ -65,8 +65,9 @@ def deploy_photo(upload_adress):
         response = requests.post(upload_adress, files=files)
         response.raise_for_status()
         server_callback = response.json()
-        for media in server_callback.values():
-            server_data.append(media)
+        server_data.append(server_callback['server'])
+        server_data.append(server_callback['photo'])
+        server_data.append(server_callback['hash'])
 
     return server_data
 
@@ -84,9 +85,7 @@ def save_photo_album(token, photo, server, hash):
         "https://api.vk.com/method/photos.saveWallPhoto", params=params)
     response.raise_for_status()
     server_response = response.json()
-    for photo_identifiers in server_response.values():
-        for media in photo_identifiers:
-            id = media["id"]
+    id = server_response['response'][0]['id']
 
     return id
 
@@ -111,13 +110,13 @@ if __name__ == "__main__":
     group_id = os.getenv("GROUP_ID")
     vk_api_key = os.getenv("VK_API_KEY")
     user_id = os.getenv("USER_ID")
-    filename = input("Введите название файла ")
+    filename = "image"
     number, image_url = get_number_of_comics()
     extension = get_file_extension(image_url)
     image_link, comment = get_image_link_and_comment(number)
     download_image(image_link)
     upload_adress = get_photo_upload_addresses(vk_api_key)
-    server_data = deploy_photo(upload_adress,)
+    server_data = deploy_photo(upload_adress)
     server, photo, hash = server_data
     media_id = save_photo_album(vk_api_key, photo, server, hash)
     publication_comics_on_the_wall(
