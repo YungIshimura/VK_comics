@@ -15,6 +15,7 @@ def get_file_extension(url):
 
 def get_number_of_comics():
     response = requests.get("https://xkcd.com/info.0.json")
+    response.raise_for_status()
     xkcd_response = response.json()
     number = xkcd_response['num']
     image_url = xkcd_response['img']
@@ -26,6 +27,7 @@ def get_image_link_and_comment(number):
     comic_number = random.randint(1, number)
     url = f"https://xkcd.com/{comic_number}/info.0.json"
     response = requests.get(url)
+    response.raise_for_status()
     comic = response.json()
     image_link = comic["img"]
     comment = comic["alt"]
@@ -35,6 +37,7 @@ def get_image_link_and_comment(number):
 
 def download_image(image_link):
     response = requests.get(image_link)
+    response.raise_for_status()
     with open(f"{filename}{extension}", "wb") as file:
         file.write(response.content)
 
@@ -79,6 +82,7 @@ def save_photo_album(token, photo, server, hash):
     }
     response = requests.post(
         "https://api.vk.com/method/photos.saveWallPhoto", params=params)
+    response.raise_for_status()
     server_response = response.json()
     for photo_identifiers in server_response.values():
         for media in photo_identifiers:
@@ -97,7 +101,9 @@ def publication_comics_on_the_wall(
         "attachments": f"photo{user_id}_{media_id}",
         "message": comment
     }
-    requests.post("https://api.vk.com/method/wall.post", params=params)
+    response = requests.post(
+        "https://api.vk.com/method/wall.post", params=params)
+    response.raise_for_status()
 
 
 if __name__ == "__main__":
