@@ -3,6 +3,7 @@ import os
 import urllib
 import random
 from dotenv import load_dotenv
+import argparse
 
 
 def get_file_extension(url):
@@ -42,11 +43,11 @@ def download_image(image_link, extension, filename):
         file.write(response.content)
 
 
-def get_photo_upload_addresses(token):
+def get_photo_upload_addresses(token,group_id):
     params = {
         "access_token": token,
         "v": "5.131.",
-        "group_id": "207920447"
+        "group_id": group_id
     }
     response = requests.get(
         "https://api.vk.com/method/photos.getWallUploadServer", params=params)
@@ -116,7 +117,7 @@ if __name__ == "__main__":
         extension = get_file_extension(image_url)
         image_link, comment = get_image_link_and_comment(number)
         download_image(image_link, extension, filename)
-        upload_adress = get_photo_upload_addresses(vk_api_key)
+        upload_adress = get_photo_upload_addresses(vk_api_key,group_id)
         server_data = deploy_photo(upload_adress)
         server, photo, hash = server_data
         media_id = save_photo_album(vk_api_key, photo, server, hash)
