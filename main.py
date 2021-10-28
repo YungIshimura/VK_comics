@@ -15,19 +15,20 @@ def get_file_extension(url):
 
 def get_number_of_comics():
     response = requests.get("https://xkcd.com/info.0.json")
-    number = response.json()["num"]
-    image_url = response.json()["img"]
+    xkcd_response = response.json()
+    number = xkcd_response['num']
+    image_url = xkcd_response['img']
 
     return number, image_url
 
 
-def get_image(number):
+def get_image_link_and_comment(number):
     comic_number = random.randint(1, number)
     url = f"https://xkcd.com/{comic_number}/info.0.json"
     response = requests.get(url)
-    response.raise_for_status()
-    image_link = response.json()["img"]
-    comment = response.json()["alt"]
+    comic = response.json()
+    image_link = comic["img"]
+    comment = comic["alt"]
 
     return image_link, comment
 
@@ -107,7 +108,7 @@ if __name__ == "__main__":
     filename = input("Введите название файла ")
     number, image_url = get_number_of_comics()
     extension = get_file_extension(image_url)
-    image_link, comment = get_image(number)
+    image_link, comment = get_image_link_and_comment(number)
     download_image(image_link)
     upload_adress = get_photo_upload_addresses(vk_api_key)
     server_data = deploy_photo(upload_adress,)
