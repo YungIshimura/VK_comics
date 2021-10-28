@@ -35,7 +35,7 @@ def get_image_link_and_comment(number):
     return image_link, comment
 
 
-def download_image(image_link):
+def download_image(image_link, extension, filename):
     response = requests.get(image_link)
     response.raise_for_status()
     with open(f"{filename}{extension}", "wb") as file:
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     number, image_url = get_number_of_comics()
     extension = get_file_extension(image_url)
     image_link, comment = get_image_link_and_comment(number)
-    download_image(image_link)
+    download_image(image_link, extension, filename)
     upload_adress = get_photo_upload_addresses(vk_api_key)
     server_data = deploy_photo(upload_adress)
     server, photo, hash = server_data
