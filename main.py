@@ -3,7 +3,14 @@ import os
 import urllib
 import random
 from dotenv import load_dotenv
-import argparse
+
+
+def check_answer(response):
+    if 'error' in response:
+        print(f"Error code: {response['error']['error_code']}")
+        print(response['error']['error_msg'])
+    else:
+        pass
 
 
 def get_file_extension(url):
@@ -43,7 +50,7 @@ def download_image(image_link, extension, filename):
         file.write(response.content)
 
 
-def get_photo_upload_addresses(token,group_id):
+def get_photo_upload_addresses(token, group_id):
     params = {
         "access_token": token,
         "v": "5.131.",
@@ -53,6 +60,7 @@ def get_photo_upload_addresses(token,group_id):
         "https://api.vk.com/method/photos.getWallUploadServer", params=params)
     response.raise_for_status()
     upload_addresses = response.json()
+    check_answer(upload_addresses)
 
     return upload_addresses['response']['upload_url']
 
@@ -66,6 +74,7 @@ def deploy_photo(upload_adress):
         response = requests.post(upload_adress, files=files)
     response.raise_for_status()
     server_callback = response.json()
+    check_answer(server_callback)
     server_data.append(server_callback['server'])
     server_data.append(server_callback['photo'])
     server_data.append(server_callback['hash'])
@@ -87,6 +96,7 @@ def save_photo_album(token, photo, server, hash):
     response.raise_for_status()
     server_response = response.json()
     id = server_response['response'][0]['id']
+    check_answer(server_response)
 
     return id
 
@@ -104,6 +114,8 @@ def publication_comics_on_the_wall(
     response = requests.post(
         "https://api.vk.com/method/wall.post", params=params)
     response.raise_for_status()
+    answer = response.json()
+    check_answer(answer)
 
 
 if __name__ == "__main__":
@@ -117,7 +129,7 @@ if __name__ == "__main__":
         extension = get_file_extension(image_url)
         image_link, comment = get_image_link_and_comment(number)
         download_image(image_link, extension, filename)
-        upload_adress = get_photo_upload_addresses(vk_api_key,group_id)
+        upload_adress = get_photo_upload_addresses(vk_api_key, group_id)
         server_data = deploy_photo(upload_adress)
         server, photo, hash = server_data
         media_id = save_photo_album(vk_api_key, photo, server, hash)
