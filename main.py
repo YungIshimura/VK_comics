@@ -78,7 +78,7 @@ def deploy_photo(upload_adress):
     return response['server'], response['photo'], response['hash']
 
 
-def save_photo_album(token, photo, server, photo_hash):
+def save_photo_album(token, group_id, photo, server, photo_hash):
     params = {
         "access_token": token,
         "v": "5.131.",
@@ -102,7 +102,7 @@ def publication_comics_on_the_wall(
     params = {
         "access_token": token,
         "v": "5.131.",
-        "owner_id": f"-{int(group_id)}",
+        "owner_id": f"-{group_id}",
         "from_group": 1,
         "attachments": f"photo{user_id}_{media_id}",
         "message": comment
@@ -116,19 +116,20 @@ def publication_comics_on_the_wall(
 
 if __name__ == "__main__":
     load_dotenv()
-    group_id = os.getenv("GROUP_ID")
+    vk_group_id = os.getenv("GROUP_ID")
     vk_api_key = os.getenv("VK_API_KEY")
-    user_id = os.getenv("USER_ID")
+    vk_user_id = os.getenv("USER_ID")
     try:
         filename = "image"
         number, image_url = get_number_of_comics()
         extension = get_file_extension(image_url)
         image_link, comment = get_random_comic(number)
         download_image(image_link, extension, filename)
-        upload_adress = get_photo_upload_addresses(vk_api_key, group_id)
+        upload_adress = get_photo_upload_addresses(vk_api_key, vk_group_id)
         server, photo, photo_hash = deploy_photo(upload_adress)
-        media_id = save_photo_album(vk_api_key, photo, server, photo_hash)
+        media_id = save_photo_album(
+            vk_api_key, vk_group_id, photo, server, photo_hash)
         publication_comics_on_the_wall(
-            vk_api_key, group_id, user_id, media_id, comment)
+            vk_api_key, vk_group_id, vk_user_id, media_id, comment)
     finally:
         os.remove(f"{filename}{extension}")
