@@ -78,23 +78,23 @@ def deploy_photo(upload_adress):
     return response['server'], response['photo'], response['hash']
 
 
-def save_photo_album(token, photo, server, hash):
+def save_photo_album(token, photo, server, photo_hash):
     params = {
         "access_token": token,
         "v": "5.131.",
         "group_id": group_id,
         "photo": photo,
         "server": server,
-        "hash": hash
+        "hash": photo_hash
     }
     response = requests.post(
         "https://api.vk.com/method/photos.saveWallPhoto", params=params)
     response.raise_for_status()
     server_response = response.json()
-    id = server_response['response'][0]['id']
+    photo_id = server_response['response'][0]['id']
     check_answer(server_response)
 
-    return id
+    return photo_id
 
 
 def publication_comics_on_the_wall(
@@ -126,8 +126,8 @@ if __name__ == "__main__":
         image_link, comment = get_random_comic(number)
         download_image(image_link, extension, filename)
         upload_adress = get_photo_upload_addresses(vk_api_key, group_id)
-        server, photo, hash = deploy_photo(upload_adress)
-        media_id = save_photo_album(vk_api_key, photo, server, hash)
+        server, photo, photo_hash = deploy_photo(upload_adress)
+        media_id = save_photo_album(vk_api_key, photo, server, photo_hash)
         publication_comics_on_the_wall(
             vk_api_key, group_id, user_id, media_id, comment)
     finally:
