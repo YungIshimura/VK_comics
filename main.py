@@ -7,8 +7,10 @@ from dotenv import load_dotenv
 
 def check_answer(response):
     if 'error' in response:
-        print(f"Error code: {response['error']['error_code']}")
-        print(response['error']['error_msg'])
+        raise Exception(
+            response['error']['error_code'],
+            response['error']['error_msg']
+        )
 
 
 def get_file_extension(url):
