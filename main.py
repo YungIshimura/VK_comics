@@ -119,12 +119,12 @@ if __name__ == "__main__":
     vk_group_id = os.getenv("GROUP_ID")
     vk_api_key = os.getenv("VK_API_KEY")
     vk_user_id = os.getenv("USER_ID")
+    filename = "image"
+    number, image_url = get_number_of_comics()
+    extension = get_file_extension(image_url)
+    image_link, comment = get_random_comic(number)
+    download_image(image_link, extension, filename)
     try:
-        filename = "image"
-        number, image_url = get_number_of_comics()
-        extension = get_file_extension(image_url)
-        image_link, comment = get_random_comic(number)
-        download_image(image_link, extension, filename)
         upload_adress = get_photo_upload_addresses(vk_api_key, vk_group_id)
         server, photo, photo_hash = deploy_photo(upload_adress)
         media_id = save_photo_album(
