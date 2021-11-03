@@ -97,7 +97,7 @@ def save_photo_album(token, group_id, photo, server, photo_hash):
     return photo_id
 
 
-def publication_comics_on_the_wall(
+def publish_comic_on_the_wall(
         token, group_id, user_id, media_id, comment):
     params = {
         "access_token": token,
@@ -129,7 +129,7 @@ if __name__ == "__main__":
         server, photo, photo_hash = deploy_photo(upload_adress)
         media_id = save_photo_album(
             vk_api_key, vk_group_id, photo, server, photo_hash)
-        publication_comics_on_the_wall(
+        publish_comic_on_the_wall(
             vk_api_key, vk_group_id, vk_user_id, media_id, comment)
     finally:
         os.remove(f"{filename}{extension}")
