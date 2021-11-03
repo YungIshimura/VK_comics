@@ -72,10 +72,10 @@ def deploy_photo(upload_adress):
         }
         response = requests.post(upload_adress, files=files)
     response.raise_for_status()
-    server_callback = response.json()
-    check_answer(server_callback)
+    response = response.json()
+    check_answer(response)
 
-    return server_callback['server'], server_callback['photo'], server_callback['hash']
+    return response['server'], response['photo'], response['hash']
 
 
 def save_photo_album(token, photo, server, hash):
