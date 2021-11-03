@@ -9,8 +9,6 @@ def check_answer(response):
     if 'error' in response:
         print(f"Error code: {response['error']['error_code']}")
         print(response['error']['error_msg'])
-    else:
-        pass
 
 
 def get_file_extension(url):
@@ -66,7 +64,6 @@ def get_photo_upload_addresses(token, group_id):
 
 
 def deploy_photo(upload_adress):
-    server_data = []
     with open(f"{filename}{extension}", "rb") as file:
         files = {
             "photo": file
@@ -75,11 +72,8 @@ def deploy_photo(upload_adress):
     response.raise_for_status()
     server_callback = response.json()
     check_answer(server_callback)
-    server_data.append(server_callback['server'])
-    server_data.append(server_callback['photo'])
-    server_data.append(server_callback['hash'])
 
-    return server_data
+    return server_callback['server'], server_callback['photo'], server_callback['hash']
 
 
 def save_photo_album(token, photo, server, hash):
@@ -130,8 +124,7 @@ if __name__ == "__main__":
         image_link, comment = get_image_link_and_comment(number)
         download_image(image_link, extension, filename)
         upload_adress = get_photo_upload_addresses(vk_api_key, group_id)
-        server_data = deploy_photo(upload_adress)
-        server, photo, hash = server_data
+        server, photo, hash = deploy_photo(upload_adress)
         media_id = save_photo_album(vk_api_key, photo, server, hash)
         publication_comics_on_the_wall(
             vk_api_key, group_id, user_id, media_id, comment)
