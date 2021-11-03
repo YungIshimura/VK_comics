@@ -31,7 +31,7 @@ def get_number_of_comics():
     return number, image_url
 
 
-def get_image_link_and_comment(number):
+def get_random_comic(number):
     comic_number = random.randint(1, number)
     url = f"https://xkcd.com/{comic_number}/info.0.json"
     response = requests.get(url)
@@ -123,7 +123,7 @@ if __name__ == "__main__":
         filename = "image"
         number, image_url = get_number_of_comics()
         extension = get_file_extension(image_url)
-        image_link, comment = get_image_link_and_comment(number)
+        image_link, comment = get_random_comic(number)
         download_image(image_link, extension, filename)
         upload_adress = get_photo_upload_addresses(vk_api_key, group_id)
         server, photo, hash = deploy_photo(upload_adress)
