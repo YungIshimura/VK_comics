@@ -6,10 +6,10 @@ from dotenv import load_dotenv
 
 
 def check_answer(response):
-    if 'error' in response:
+    if "error" in response:
         raise Exception(
-            response['error']['error_code'],
-            response['error']['error_msg']
+            response["error"]["error_code"],
+            response["error"]["error_msg"]
         )
 
 
@@ -25,8 +25,8 @@ def get_number_of_comics():
     response = requests.get("https://xkcd.com/info.0.json")
     response.raise_for_status()
     xkcd_response = response.json()
-    number = xkcd_response['num']
-    image_url = xkcd_response['img']
+    number = xkcd_response["num"]
+    image_url = xkcd_response["img"]
 
     return number, image_url
 
@@ -62,7 +62,7 @@ def get_photo_upload_addresses(token, group_id):
     upload_addresses = response.json()
     check_answer(upload_addresses)
 
-    return upload_addresses['response']['upload_url']
+    return upload_addresses["response"]["upload_url"]
 
 
 def deploy_photo(upload_adress):
@@ -75,7 +75,7 @@ def deploy_photo(upload_adress):
     response = response.json()
     check_answer(response)
 
-    return response['server'], response['photo'], response['hash']
+    return response["server"], response["photo"], response["hash"]
 
 
 def save_photo_album(token, group_id, photo, server, photo_hash):
@@ -91,7 +91,7 @@ def save_photo_album(token, group_id, photo, server, photo_hash):
         "https://api.vk.com/method/photos.saveWallPhoto", params=params)
     response.raise_for_status()
     server_response = response.json()
-    photo_id = server_response['response'][0]['id']
+    photo_id = server_response["response"][0]["id"]
     check_answer(server_response)
 
     return photo_id
