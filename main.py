@@ -91,8 +91,8 @@ def save_photo_album(token, group_id, photo, server, photo_hash):
         "https://api.vk.com/method/photos.saveWallPhoto", params=params)
     response.raise_for_status()
     server_response = response.json()
-    photo_id = server_response["response"][0]["id"]
     check_answer(server_response)
+    photo_id = server_response["response"][0]["id"]
 
     return photo_id
 
